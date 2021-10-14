@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akeneo\Connectivity\Connection\Infrastructure\Marketplace;
 
+use Akeneo\Platform\Bundle\FeatureFlagBundle\FeatureFlag;
 use GuzzleHttp\ClientInterface;
 
 /**
@@ -15,13 +16,16 @@ class WebMarketplaceApi implements WebMarketplaceApiInterface
     private ClientInterface $client;
     private WebMarketplaceAliasesInterface $webMarketplaceAliases;
     private string $fixturePath;
+    private FeatureFlag $fakeAppsFeatureFlag;
 
     public function __construct(
         ClientInterface $client,
-        WebMarketplaceAliasesInterface $webMarketplaceAliases
+        WebMarketplaceAliasesInterface $webMarketplaceAliases,
+        FeatureFlag $fakeAppsFeatureFlag
     ) {
         $this->client = $client;
         $this->webMarketplaceAliases = $webMarketplaceAliases;
+        $this->fakeAppsFeatureFlag = $fakeAppsFeatureFlag;
     }
 
     public function getExtensions(int $offset = 0, int $limit = 10): array
@@ -44,6 +48,10 @@ class WebMarketplaceApi implements WebMarketplaceApiInterface
 
     public function getApps(int $offset = 0, int $limit = 10): array
     {
+        if ($this->fakeAppsFeatureFlag->isEnabled()) {
+            return json_decode(file_get_contents($this->fixturePath . 'marketplace-data-apps.json'), true);
+        }
+
         $edition = $this->webMarketplaceAliases->getEdition();
         $version = $this->webMarketplaceAliases->getVersion();
 

@@ -38,6 +38,7 @@ services:
         arguments:
             - '@akeneo_connectivity.connection.marketplace.guzzle_client'
             - '@akeneo_connectivity.connection.marketplace.web_marketplace_aliases'
+            - '@akeneo_connectivity.connection.marketplace_fake_apps.feature'
         calls:
             - setFixturePath: [ '%connectivity.marketplace_fixtures_directory%' ]
 
