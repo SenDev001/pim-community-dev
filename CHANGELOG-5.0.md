@@ -2,6 +2,7 @@
 
 ## Bug fixes
 
+- PIM-10040: Fix longtext types instead of json type in old catalogs
 - PIM-10075: Impossible to classify products in a new tab/window from a right click on the product grid
 
 # 5.0.51 (2021-10-18)
