@@ -171,13 +171,59 @@ class NavigationContext extends PimContext implements PageObjectAware
     }
 
     /**
-     * @param string $page
-     * @param array $options
-     *
+     * @Given /^I go to the ([^"]*) page to see ([^"]+) notifications?$/
+     */
+    public function iGoToThePageToSeeNotification(string $page, string $expectedCount, array $options = []): void
+    {
+        $page = isset($this->getPageMapping()[$page]) ? $this->getPageMapping()[$page] : $page;
+        $expectedCount = (int) $expectedCount;
+
+        $this->spin(function () use ($page, $expectedCount, $options) {
+            $this->openPage($page, $options);
+            $expectedFullUrl = $this->getCurrentPage()->getUrl($options);
+            $actualFullUrl = $this->getSession()->getCurrentUrl();
+            $expectedUrl = $this->sanitizeUrl($expectedFullUrl);
+            $actualUrl = $this->sanitizeUrl($actualFullUrl);
+
+            if ($expectedUrl !== $actualUrl) {
+                throw new \Exception(\sprintf('You are not on the %s page', $page));
+            }
+
+            // We cannot embed a spin in another spin, so we create our own (shorter) spin.
+            // We search the notification count in the page. If it does not match the expected count,
+            // that could mean the page is not well loaded. The first spin will reload the page in that case.
+            // See https://github.com/akeneo/pim-community-dev/pull/15573
+            $try = 0;
+            $actualCount = 0;
+            $countContainer = null;
+            do {
+                $try++;
+                $countContainer = $this->getCurrentPage()->find('css', '.AknNotificationMenu-countContainer');
+                if ($countContainer) {
+                    $actualCount = (int) $countContainer->getText();
+                    if ($actualCount === $expectedCount) {
+                        return true;
+                    }
+                }
+
+                sleep(1);
+            } while ($try <= 4);
+
+            if (!$countContainer) {
+                throw new \Exception('Cannot access to the count element');
+            }
+
+            throw new \InvalidArgumentException(
+                \sprintf('Expecting to see %d new notifications, saw %d', $expectedCount, $actualCount)
+            );
+        }, \sprintf('You are not on the %s page or the notification count is not the expected one', $page));
+    }
+
+    /**
      * @Given /^I am on the ([^"]*) page$/
      * @Given /^I go to the ([^"]*) page$/
      */
-    public function iAmOnThePage($page, array $options = [])
+    public function iAmOnThePage($page, array $options = []): void
     {
         $page = isset($this->getPageMapping()[$page]) ? $this->getPageMapping()[$page] : $page;
 

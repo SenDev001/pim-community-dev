@@ -26,7 +26,6 @@ Feature: Quick export many products with localized attributes from datagrid
       | sandals  | sandals  | summer_collection | Sandals       | 5 EUR, 5 USD         | 40   | red   | 0.5 GRAM    | 75        |                 |
       | pump     |          | summer_collection | Pump          | 15 EUR, 20 USD       | 41   | blue  |             |           |                 |
 
-  @skip
   Scenario: Successfully quick export XLSX products with localized attributes
     Given I am on the products grid
     And I switch the locale to "en_US"
@@ -38,8 +37,7 @@ Feature: Quick export many products with localized attributes from datagrid
     And I press the "Avec images" button
     And I press the "Export" button
     And I wait for the "xlsx_product_quick_export" quick export to finish
-    And I am on the dashboard page
-    Then I should have 1 new notification
+    And I go to the dashboard page to see 1 new notification
     And I should see notification:
       | type    | message                                               |
       | success | L'export rapide XLSX product quick export est terminé |
