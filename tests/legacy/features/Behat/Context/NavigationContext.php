@@ -171,7 +171,7 @@ class NavigationContext extends PimContext implements PageObjectAware
     }
 
     /**
-     * @Given /^I go to the ([^"]*) page to see ([^"]+) notifications?$/
+     * @Given /^I go to the ([^"]*) page to see ([^"]+) new notifications?$/
      */
     public function iGoToThePageToSeeNotification(string $page, string $expectedCount, array $options = []): void
     {

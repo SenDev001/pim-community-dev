@@ -37,8 +37,7 @@ Feature: Quick export many products from datagrid
     And I press the "With media" button
     And I press the "Export" button
     And I wait for the "csv_product_quick_export" quick export to finish
-    And I am on the dashboard page
-    Then I should have 1 new notification
+    And I go to the dashboard page to see 1 new notification
     And I should see notification:
       | type    | message                                        |
       | success | Quick export CSV product quick export finished |
@@ -65,8 +64,7 @@ Feature: Quick export many products from datagrid
     And I press the "With media" button
     And I press the "Export" button
     And I wait for the "xlsx_product_quick_export" quick export to finish
-    And I am on the dashboard page
-    Then I should have 1 new notification
+    And I go to the dashboard page to see 1 new notification
     And I should see notification:
       | type    | message                                                      |
       | success | Quick Export Quick export XLSX product quick export finished |
